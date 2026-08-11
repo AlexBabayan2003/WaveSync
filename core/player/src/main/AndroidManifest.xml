@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <!--
+      These are declared here rather than in :app so the module stays self-contained: whoever
+      depends on :core:player inherits exactly the permissions the service needs. The manifest
+      merger unions them into the final app manifest.
+
+      NOT declared here: WAKE_LOCK and ACCESS_NETWORK_STATE. The media3-exoplayer AAR already
+      contributes both via its own manifest, so re-declaring them is redundant.
+    -->
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE_MEDIA_PLAYBACK" />
+    <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
+
+    <application>
+        <!--
+          android:name MUST be fully qualified. In a *library* manifest a leading-dot name resolves
+          against the merged application package (com.example.wavesync), not this module's
+          namespace, so ".PlaybackService" would silently become
+          com.example.wavesync.PlaybackService and fail with ClassNotFoundException at bind time.
+
+          android:foregroundServiceType="mediaPlayback" is mandatory on API 34+. Without it the OS
+          throws MissingForegroundServiceTypeException from inside Media3's own startForeground()
+          call, so it presents as a crash in code you did not write.
+
+          android:exported="true" lets out-of-process MediaControllers bind: Android Auto, Wear,
+          Assistant, and the system media controls. Note the consequence: an exported service with
+          an intent-filter and no permission is bindable by any app on the device, so
+          MediaSession.Callback.onConnect is the real access control. Set this to "false" if
+          WaveSync should stay strictly self-contained; hardware media buttons and the system media
+          controls keep working either way, because those route through the platform session token
+          rather than a service bind.
+        -->
+        <!--
+          ExportedService is suppressed deliberately: a MediaSessionService cannot be guarded by a
+          custom permission, because the callers that must reach it (SystemUI, Android Auto, Wear,
+          Assistant) will never hold one. Media3's designed access control is
+          MediaSession.Callback.onConnect, which can reject a caller or grant it a reduced command
+          set after inspecting its package and signature.
+        -->
+        <service
+            android:name="com.example.wavesync.core.player.PlaybackService"
+            android:exported="true"
+            android:foregroundServiceType="mediaPlayback"
+            tools:ignore="ExportedService">
+            <intent-filter>
+                <action android:name="androidx.media3.session.MediaSessionService" />
+            </intent-filter>
+        </service>
+    </application>
+
+</manifest>
