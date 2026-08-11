@@ -1,0 +1,35 @@
+# Project overrides layered on top of detekt's default ruleset
+# (buildUponDefaultConfig = true in the root build script).
+
+build:
+  maxIssues: 0
+
+style:
+  MagicNumber:
+    # Android code is full of legitimate constants (flags, dimensions, API levels).
+    ignorePropertyDeclaration: true
+    ignoreCompanionObjectPropertyDeclaration: true
+    ignoreAnnotation: true
+  ReturnCount:
+    max: 3
+  MaxLineLength:
+    maxLineLength: 120
+
+complexity:
+  LongMethod:
+    # Service lifecycle methods (onCreate) legitimately do a lot of wiring.
+    threshold: 70
+  TooManyFunctions:
+    thresholdInClasses: 15
+    ignoreOverridden: true
+
+naming:
+  FunctionNaming:
+    # @Composable functions are PascalCase by convention.
+    ignoreAnnotated: ['Composable']
+
+comments:
+  UndocumentedPublicClass:
+    active: false
+  UndocumentedPublicFunction:
+    active: false

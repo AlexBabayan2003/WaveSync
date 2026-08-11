@@ -1,15 +1,44 @@
 *.iml
+
+# Gradle
 .gradle
+build/
+!gradle/wrapper/gradle-wrapper.jar
+!gradle-wrapper.properties
+
+# Local machine configuration -- contains absolute SDK paths, never commit
+local.properties
 /local.properties
-/.idea/caches
-/.idea/libraries
-/.idea/modules.xml
-/.idea/workspace.xml
-/.idea/navEditor.xml
-/.idea/assetWizardSettings.xml
-.DS_Store
-/build
+
+# IDE
+# The whole .idea directory is ignored: it holds per-developer state (window
+# layouts, caches, task history) and occasionally machine-specific paths. The
+# handful of shareable files in there are not worth the merge conflicts.
+.idea/
+*.iws
+*.ipr
+.kotlin/
+
+# Android build artifacts
 /captures
 .externalNativeBuild
 .cxx
-local.properties
+*.apk
+*.aab
+*.ap_
+*.dex
+
+# Signing material -- must never reach a public repo
+*.jks
+*.keystore
+keystore.properties
+signing.properties
+
+# Secrets
+*.env
+secrets.properties
+google-services.json
+
+# OS
+.DS_Store
+Thumbs.db
