@@ -24,4 +24,5 @@ dependencyResolutionManagement {
 
 rootProject.name = "WaveSync"
 include(":app")
+include(":core:player")
  

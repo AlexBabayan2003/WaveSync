@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Shown as the notification channel label in system notification settings. -->
+    <string name="playback_notification_channel_name">Playback</string>
+</resources>
